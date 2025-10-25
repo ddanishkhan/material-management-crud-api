@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "a1b2c3d4-e5f6-7899-abcd-ef1234567890",
+		"_postman_id": "e76a29d1-793a-46e3-9c92-c8e7948e2f15",
 		"name": "Material Management API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_collection_id": "a1b2c3d4-e5f6-7899-abcd-ef1234567890"
+		"_exporter_id": "9296234"
 	},
 	"item": [
 		{
@@ -14,13 +14,13 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 201 Created\", function () {",
-							    "    pm.response.to.have.status(201);",
+							"    pm.response.to.have.status(201);",
 							"});",
 							"pm.test(\"Response has materialId and externalId\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.materialId).to.be.a('string');",
 							"    pm.expect(responseJson.externalId).to.be.a('string');",
-						"});",
+							"});",
 							"// Extract material_id and external_id for subsequent requests",
 							"const responseJson = pm.response.json();",
 							"pm.environment.set('material_id', responseJson.materialId);",
@@ -67,13 +67,13 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 409 Conflict\", function () {",
-							    "    pm.response.to.have.status(409);",
+							"    pm.response.to.have.status(409);",
 							"});",
 							"pm.test(\"Response contains duplicate name error message\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.message).to.include('Material with name');",
 							"    pm.expect(responseJson.message).to.include('already exists.');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -114,17 +114,17 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 200 OK\", function () {",
-							    "    pm.response.to.have.status(200);",
+							"    pm.response.to.have.status(200);",
 							"});",
 							"pm.test(\"Response is paginated\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.content).to.be.an('array');",
 							"    pm.expect(responseJson.pageNo).to.be.a('number');",
 							"    pm.expect(responseJson.pageSize).to.be.a('number');",
 							"    pm.expect(responseJson.totalElements).to.be.a('number');",
 							"    pm.expect(responseJson.totalPages).to.be.a('number');",
 							"    pm.expect(responseJson.last).to.be.a('boolean');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -170,13 +170,13 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 200 OK\", function () {",
-							    "    pm.response.to.have.status(200);",
+							"    pm.response.to.have.status(200);",
 							"});",
 							"pm.test(\"Response has materialId and externalId\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.materialId).to.be.a('string');",
 							"    pm.expect(responseJson.externalId).to.be.a('string');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -209,12 +209,12 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 404 Not Found\", function () {",
-							    "    pm.response.to.have.status(404);",
+							"    pm.response.to.have.status(404);",
 							"});",
 							"pm.test(\"Response contains not found error message\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.message).to.include('Material not found');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -247,12 +247,12 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 200 OK\", function () {",
-							    "    pm.response.to.have.status(200);",
+							"    pm.response.to.have.status(200);",
 							"});",
 							"pm.test(\"Response has updated material details\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.materialName).to.eql('Steel Bar 12mm');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -294,12 +294,12 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 404 Not Found\", function () {",
-							    "    pm.response.to.have.status(404);",
+							"    pm.response.to.have.status(404);",
 							"});",
 							"pm.test(\"Response contains not found error message\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.message).to.include('Material not found');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -341,14 +341,14 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 200 OK\", function () {",
-							    "    pm.response.to.have.status(200);",
+							"    pm.response.to.have.status(200);",
 							"});",
 							"pm.test(\"Response contains deletion message and IDs\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.message).to.eql('Material deleted successfully');",
 							"    pm.expect(responseJson.materialId).to.be.a('string');",
 							"    pm.expect(responseJson.externalId).to.be.a('string');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}
@@ -381,12 +381,12 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 404 Not Found\", function () {",
-							    "    pm.response.to.have.status(404);",
+							"    pm.response.to.have.status(404);",
 							"});",
 							"pm.test(\"Response contains not found error message\", function () {",
-							    "    const responseJson = pm.response.json();",
+							"    const responseJson = pm.response.json();",
 							"    pm.expect(responseJson.message).to.include('Material not found');",
-						"});"
+							"});"
 						],
 						"type": "text/javascript"
 					}

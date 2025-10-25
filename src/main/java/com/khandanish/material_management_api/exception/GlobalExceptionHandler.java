@@ -1,6 +1,7 @@
 package com.khandanish.material_management_api.exception;
 
 import com.khandanish.material_management_api.dto.ErrorResponse;
+import com.khandanish.material_management_api.dto.ValidationErrorResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,11 +25,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ErrorResponse>> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        List<ErrorResponse> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), error.getField(), error.getDefaultMessage(), request.getRequestURI()))
+    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        List<ValidationErrorResponse.FieldErrorDetail> errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> new ValidationErrorResponse.FieldErrorDetail(error.getField(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+
+        ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "Validation failed",
+                errors,
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(validationErrorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateMaterialNameException.class)
@@ -42,7 +52,6 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.getMostSpecificCause().getMessage();
         String userFriendlyMessage = "Data integrity violation.";
 
-        // Fallback for other DataIntegrityViolationException that are not DuplicateMaterialNameException
         if (errorMessage != null && errorMessage.contains("fk_uom_createdby_employee")) {
             userFriendlyMessage = "Invalid createdBy user ID. User does not exist.";
         } else {
