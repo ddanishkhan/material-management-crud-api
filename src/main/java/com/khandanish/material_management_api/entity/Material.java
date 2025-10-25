@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
@@ -28,6 +30,7 @@ public class Material extends Auditable {
     private UUID materialId;
 
     @Column(name = "external_id", unique = true, nullable = false, insertable = false, updatable = false)
+    @Generated(GenerationTime.ALWAYS)
     private String externalId;
 
     @Column(name = "material_name", nullable = false, length = 100)

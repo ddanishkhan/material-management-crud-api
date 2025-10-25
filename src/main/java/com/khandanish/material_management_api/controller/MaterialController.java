@@ -1,11 +1,16 @@
 package com.khandanish.material_management_api.controller;
 
+import com.khandanish.material_management_api.dto.DeleteResponse;
 import com.khandanish.material_management_api.dto.MaterialRequest;
 import com.khandanish.material_management_api.dto.MaterialResponse;
 import com.khandanish.material_management_api.dto.MaterialUpdateRequest;
+import com.khandanish.material_management_api.dto.PageResponse;
 import com.khandanish.material_management_api.service.MaterialService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +26,8 @@ public class MaterialController {
     private final MaterialService materialService;
 
     @GetMapping
-    public ResponseEntity<List<MaterialResponse>> getAllActiveMaterials() {
-        return ResponseEntity.ok(materialService.getAllActiveMaterials());
+    public ResponseEntity<PageResponse<MaterialResponse>> getAllActiveMaterials(@PageableDefault(size = 10, sort = "materialName") @ParameterObject Pageable pageable) {
+        return ResponseEntity.ok(materialService.getAllActiveMaterials(pageable));
     }
 
     @GetMapping("/{id}")
@@ -41,8 +46,8 @@ public class MaterialController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> softDeleteMaterial(@PathVariable UUID id) {
-        materialService.softDeleteMaterial(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<DeleteResponse> softDeleteMaterial(@PathVariable UUID id) {
+        DeleteResponse response = materialService.softDeleteMaterial(id);
+        return ResponseEntity.ok(response);
     }
 }

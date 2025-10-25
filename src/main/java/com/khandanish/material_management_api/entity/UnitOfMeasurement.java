@@ -3,6 +3,8 @@ package com.khandanish.material_management_api.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -20,6 +22,7 @@ public class UnitOfMeasurement extends Auditable {
     private UUID uomId;
 
     @Column(name = "external_id", unique = true, nullable = false, insertable = false, updatable = false)
+    @Generated(GenerationTime.ALWAYS)
     private String externalId;
 
     @Column(name = "uom_name", nullable = false, length = 100)

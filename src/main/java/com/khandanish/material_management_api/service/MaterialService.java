@@ -15,12 +15,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import com.khandanish.material_management_api.dto.DeleteResponse;
+import com.khandanish.material_management_api.dto.PageResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -32,10 +36,12 @@ public class MaterialService {
     private final MaterialManufacturerRepository materialManufacturerRepository;
     private final MaterialVendorRepository materialVendorRepository;
 
-    public List<MaterialResponse> getAllActiveMaterials() {
-        return materialRepository.findByIsActiveTrue().stream()
+    public PageResponse<MaterialResponse> getAllActiveMaterials(Pageable pageable) {
+        Page<Material> materialsPage = materialRepository.findByIsActiveTrue(pageable);
+        List<MaterialResponse> content = materialsPage.getContent().stream()
                 .map(this::mapToMaterialResponse)
                 .collect(Collectors.toList());
+        return new PageResponse<>(content, materialsPage.getNumber(), materialsPage.getSize(), materialsPage.getTotalElements(), materialsPage.getTotalPages(), materialsPage.isLast());
     }
 
     public MaterialResponse getMaterialById(UUID id) {
@@ -149,11 +155,12 @@ public class MaterialService {
     }
 
     @Transactional
-    public void softDeleteMaterial(UUID id) {
+    public DeleteResponse softDeleteMaterial(UUID id) {
         Material material = materialRepository.findByMaterialIdAndIsActiveTrue(id)
                 .orElseThrow(() -> new EntityNotFoundException("Material not found with id: " + id));
         material.setIsActive(false);
         materialRepository.save(material);
+        return new DeleteResponse("Material deleted successfully", material.getMaterialId(), material.getExternalId());
     }
 
     private MaterialResponse mapToMaterialResponse(Material material) {

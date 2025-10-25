@@ -2,6 +2,8 @@ package com.khandanish.material_management_api.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.UUID;
@@ -24,6 +26,7 @@ public class MaterialVendor extends Auditable {
     private UUID materialVendorId;
 
     @Column(name = "external_id", unique = true, nullable = false, insertable = false, updatable = false)
+    @Generated(GenerationTime.ALWAYS)
     private String externalId;
 
     @Column(name = "material_vendor_name", nullable = false, length = 100)

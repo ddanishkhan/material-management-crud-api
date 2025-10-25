@@ -1,6 +1,8 @@
 package com.khandanish.material_management_api.repository;
 
 import com.khandanish.material_management_api.entity.Material;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, UUID> {
-    List<Material> findByIsActiveTrue();
+    Page<Material> findByIsActiveTrue(Pageable pageable);
     Optional<Material> findByMaterialIdAndIsActiveTrue(UUID id);
 }

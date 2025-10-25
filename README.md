@@ -7,46 +7,11 @@ Build a complete CRUD API for the Material Management module using Spring Boot. 
 ### Postgres database
 `docker run --name postgres-db -e POSTGRES_PASSWORD=admin123 -p 5432:5432 -d postgres:17.6`
 
-## Database Schema
-You will work with the `material` table and its related entities:
-- `material` – Main entity (material details, rate, pack size)
-- `unit_of_measurement` – UOM reference (kg, liter, pieces, etc.)
-- `material_type` – Material categorization
-- `material_manufacturer` – Manufacturer details
-- `material_vendor` – Vendor/supplier details
+Execute the ddl from `src/main/resources/schema.sql` and insert queries from `src/main/resources/starter-data.sql`
 
-### Key Schema Features
-- UUID primary keys with auto-generated external IDs (e.g., MAT-2025-0001)
-- Foreign key relationships to UOM, type, manufacturer, and vendor
-- Soft delete pattern using `is_active` flag
-- Audit fields: `created_by`, `created_on`, `updated_by`, `updated_on`
-- Unique constraints on `material_name` (case-insensitive, active records only)
+### Spring Boot startup
+Add VM arguments `-Duser.timezone=UTC` 
 
-## Requirements
-
-### API Endpoints to Implement
-1.  **GET /api/materials** – Retrieve all active materials
-2.  **GET /api/materials/{id}** – Retrieve a specific material by ID
-3.  **POST /api/materials** – Create a new material
-4.  **PUT /api/materials/{id}** – Update an existing material
-5.  **DELETE /api/materials/{id}** – Soft delete a material (set `is_active = false`)
-
-### Technical Requirements
-#### Must Have:
-- Clean layered architecture (Controller -> Service -> Repository)
-- JPA entities with proper relationship mappings
-- DTO pattern for request/response
-- Input validation with appropriate error messages
-- Foreign key existence validation before insert/update
-- Proper HTTP status codes (200, 201, 400, 404, etc.)
-- Exception handling with meaningful error responses
-- Soft delete implementation
-
-#### Code Quality:
-- Follow standard Spring Boot conventions
-- Use meaningful variable/method names
-- Proper transaction management
-- Handle constraint violations gracefully
 
 #### Very Optional (Bonus Points):
 - Pagination and sorting for GET ALL endpoint
