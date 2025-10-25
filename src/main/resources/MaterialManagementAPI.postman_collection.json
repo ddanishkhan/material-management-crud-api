@@ -1,0 +1,436 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7899-abcd-ef1234567890",
+		"name": "Material Management API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_collection_id": "a1b2c3d4-e5f6-7899-abcd-ef1234567890"
+	},
+	"item": [
+		{
+			"name": "Create Material (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 Created\", function () {",
+							    "    pm.response.to.have.status(201);",
+							"});",
+							"pm.test(\"Response has materialId and externalId\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.materialId).to.be.a('string');",
+							"    pm.expect(responseJson.externalId).to.be.a('string');",
+						"});",
+							"// Extract material_id and external_id for subsequent requests",
+							"const responseJson = pm.response.json();",
+							"pm.environment.set('material_id', responseJson.materialId);",
+							"pm.environment.set('external_id', responseJson.externalId);",
+							"console.log('Set material_id:', pm.environment.get('material_id'));",
+							"console.log('Set external_id:', pm.environment.get('external_id'));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"materialName\": \"Steel Bar 10mm\",\n  \"materialRatePerPack\": 150.75,\n  \"materialPackSize\": 10.0,\n  \"materialUomId\": \"11111111-1111-1111-1111-111111111111\", \n  \"materialTypeId\": \"33333333-3333-3333-3333-333333333333\",\n  \"materialManufacturerId\": \"44444444-4444-4444-4444-444444444444\",\n  \"materialVendorId\": \"55555555-5555-5555-5555-555555555555\",\n  \"materialDesc\": \"High-grade steel bar for construction\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Material (Duplicate Name Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 409 Conflict\", function () {",
+							    "    pm.response.to.have.status(409);",
+							"});",
+							"pm.test(\"Response contains duplicate name error message\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.message).to.include('Material with name');",
+							"    pm.expect(responseJson.message).to.include('already exists.');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"materialName\": \"Steel Bar 10mm\",\n  \"materialRatePerPack\": 150.75,\n  \"materialPackSize\": 10.0,\n  \"materialUomId\": \"11111111-1111-1111-1111-111111111111\", \n  \"materialTypeId\": \"33333333-3333-3333-3333-333333333333\",\n  \"materialManufacturerId\": \"44444444-4444-4444-4444-444444444444\",\n  \"materialVendorId\": \"55555555-5555-5555-5555-555555555555\",\n  \"materialDesc\": \"High-grade steel bar for construction\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/materials",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Materials (Paginated & Sorted)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", function () {",
+							    "    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response is paginated\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.content).to.be.an('array');",
+							"    pm.expect(responseJson.pageNo).to.be.a('number');",
+							"    pm.expect(responseJson.pageSize).to.be.a('number');",
+							"    pm.expect(responseJson.totalElements).to.be.a('number');",
+							"    pm.expect(responseJson.totalPages).to.be.a('number');",
+							"    pm.expect(responseJson.last).to.be.a('boolean');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/materials?page=0&size=5&sort=materialName,asc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "5"
+						},
+						{
+							"key": "sort",
+							"value": "materialName,asc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Material by ID (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", function () {",
+							    "    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response has materialId and externalId\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.materialId).to.be.a('string');",
+							"    pm.expect(responseJson.externalId).to.be.a('string');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/materials/{{material_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials",
+						"{{material_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Material by ID (Not Found Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {",
+							    "    pm.response.to.have.status(404);",
+							"});",
+							"pm.test(\"Response contains not found error message\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.message).to.include('Material not found');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/materials/00000000-0000-0000-0000-000000000000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Material (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", function () {",
+							    "    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response has updated material details\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.materialName).to.eql('Steel Bar 12mm');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"materialName\": \"Steel Bar 12mm\",\n  \"materialRatePerPack\": 180.50,\n  \"materialPackSize\": 12.0,\n  \"materialDesc\": \"Updated: High-grade steel bar for heavy construction\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/materials/{{material_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials",
+						"{{material_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Material (Not Found Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {",
+							    "    pm.response.to.have.status(404);",
+							"});",
+							"pm.test(\"Response contains not found error message\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.message).to.include('Material not found');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"materialName\": \"Non Existent Material\",\n  \"materialRatePerPack\": 100.0,\n  \"materialPackSize\": 1.0\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/materials/00000000-0000-0000-0000-000000000000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Material (Success)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", function () {",
+							    "    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response contains deletion message and IDs\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.message).to.eql('Material deleted successfully');",
+							"    pm.expect(responseJson.materialId).to.be.a('string');",
+							"    pm.expect(responseJson.externalId).to.be.a('string');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/materials/{{material_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials",
+						"{{material_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Material (Not Found Error)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", function () {",
+							    "    pm.response.to.have.status(404);",
+							"});",
+							"pm.test(\"Response contains not found error message\", function () {",
+							    "    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.message).to.include('Material not found');",
+						"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/materials/00000000-0000-0000-0000-000000000000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"materials",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "material_id",
+			"value": ""
+		},
+		{
+			"key": "external_id",
+			"value": ""
+		}
+	]
+}
