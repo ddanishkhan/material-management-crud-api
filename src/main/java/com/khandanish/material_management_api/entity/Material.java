@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Generated;
@@ -63,4 +64,8 @@ public class Material extends Auditable {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+
+    @Version
+    @Column(name = "version")
+    private Integer version;
 }

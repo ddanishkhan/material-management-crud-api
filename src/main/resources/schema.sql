@@ -32,6 +32,7 @@ CREATE TABLE mdm_schema.material (
 	created_on timestamp DEFAULT now() NOT NULL,
 	updated_by uuid NULL,
 	updated_on timestamp DEFAULT now() NOT NULL,
+	version int DEFAULT 0 NOT NULL,
 	CONSTRAINT material_external_id_key UNIQUE (external_id),
 	CONSTRAINT material_pkey PRIMARY KEY (material_id)
 );
